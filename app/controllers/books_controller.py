@@ -1,11 +1,11 @@
 import json
 
-from flask import Blueprint, jsonify, request, Response, make_response
+from flask import Blueprint, jsonify, request, Response
 from app.services import BooksRepository
 from app.services import BooksServices
 from app.services import CategoryRepository
 from database import Database
-
+from helpers import decode_token, TokenDecodeError
 books_controller = Blueprint('books', __name__)
 
 
@@ -64,9 +64,46 @@ def get_book(id_book):
 
 
 
-# @books_controller.route('/rent/<int:id_book>', methods=['POST'])
-# def rent_a_book(id_book):
-#
+@books_controller.route('/rent/<int:id_book>', methods=['POST'])
+def rent_a_book(id_book):
+    connection = Database.init_connection()
+    books_service = BooksServices(connection)
+    token = request.headers.get('Authorization')
+    print(token)
+
+    if not token:
+        return jsonify(message='Somente usuários cadastrados podem alugar livros')
+
+    try:
+        user_payload = decode_token(token)
+        books_service.rent_book(user_payload['id'], id_book)
+        return jsonify(message='Voce alugou o livro, parabéns!')
+
+    except TokenDecodeError as e:
+        return jsonify(Error=str(e)), 401
+
+@books_controller.route('/returnbook/<int:id_book>', methods=['PUT'])
+def return_book(id_book):
+    connection = Database.init_connection()
+    books_service = BooksServices(connection)
+    token = request.headers.get('Authorization')
+
+    if not token:
+        return jsonify(message='Somente usuários cadastrados podem alugar livros')
+
+    user_payload = decode_token(token)
+    books_service.return_book(user_payload['id'], id_book)
+
+    return jsonify(message='O livro foi devolvido')
+
+
+
+
+
+
+
+
+
 
 
 

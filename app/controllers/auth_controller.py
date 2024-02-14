@@ -1,8 +1,12 @@
 from flask import Blueprint, request, jsonify
-
-from app.services import UserRepository
+from app import bcrypt
 from database import Database
+from app.services import UserRepository
+from helpers.JWTFunctions import generate_token
+
+
 auth_controller = Blueprint('auth', __name__)
+
 
 @auth_controller.route('/', methods=['POST'])
 def login():
@@ -17,11 +21,12 @@ def login():
     if email_db != data['email']:
         return jsonify('login invalido'), 401
 
-    if password_db != data['password']:
+    if not bcrypt.check_password_hash(password_db, data['password']):
         return jsonify('senha invalida'), 401
 
-    else:
-        return jsonify({'message': 'bem vindo'})
+    token = generate_token(user_database[0], user_database[1])
+    return jsonify({'message': 'bem vindo', 'token': token})
+
 
 @auth_controller.route('/register', methods=['POST'])
 def register():
@@ -36,6 +41,9 @@ def register():
     if data['password'] != data['confirm_password']:
         return jsonify('A senha e a confirmação de senha devem ser iguais'), 401
 
-    else:
-        user_repository.insert_user(data['first_name'], data['last_name'], data['email'], data['password'])
-        return jsonify({'message': 'usuario salvo'})
+    hash_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    user_db = user_repository.insert_user(data['first_name'], data['last_name'], data['email'], hash_password)
+
+    token = generate_token(user_db[0], user_db[1])
+
+    return jsonify({'message': 'usuario salvo', 'token': token})

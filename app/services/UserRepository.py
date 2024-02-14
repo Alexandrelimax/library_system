@@ -12,8 +12,7 @@ class UserRepository:
         # try:
         cursor.execute(query, values)
         self.connection.commit()
-        print('salvo')
-        cursor.close()
+        return self.get_user_by_email(email)
         # except:
         #     print(f'impossivel persistir')
 
