@@ -1,0 +1,63 @@
+USE library;
+
+CREATE TABLE IF NOT EXISTS users(
+id INT AUTO_INCREMENT PRIMARY KEY,
+first_name VARCHAR(50) NOT NULL,
+last_name VARCHAR(50) NOT NULL,
+email VARCHAR(80) NOT NULL UNIQUE,
+password VARCHAR(150) NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE IF NOT EXISTS books(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(50) NOT NULL,
+description VARCHAR(200) NOT NULL,
+url_img VARCHAR(255) NOT NULL UNIQUE,
+author VARCHAR(50) NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE IF NOT EXISTS categories(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS books_categories(
+id_category INT,
+id_books INT
+);
+
+ALTER TABLE books_categories ADD CONSTRAINT fk_categories_in_books_categories
+FOREIGN KEY (id_category) REFERENCES categories(id);
+
+ALTER TABLE books_categories ADD CONSTRAINT fk_books_in_books_categories
+FOREIGN KEY (id_books) REFERENCES books(id);
+
+
+CREATE TABLE IF NOT EXISTS phones(
+id INT AUTO_INCREMENT PRIMARY KEY,
+user_number VARCHAR(14),
+id_user INT
+);
+
+ALTER TABLE phones ADD CONSTRAINT fk_user_phones
+FOREIGN KEY(id_user) REFERENCES users(id) ON DELETE CASCADE;
+
+
+CREATE TABLE IF NOT EXISTS books_transactions(
+id INT AUTO_INCREMENT PRIMARY KEY,
+rental_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+return_date TIMESTAMP NULL,
+id_user INT NOT NULL,
+id_book INT NOT NULL
+);
+
+ALTER TABLE books_transactions ADD CONSTRAINT fk_user_in_books_transactions
+FOREIGN KEY(id_user) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE books_transactions ADD CONSTRAINT fk_books_in_books_transactions
+FOREIGN KEY(id_book) REFERENCES books(id) ON DELETE CASCADE;
+
