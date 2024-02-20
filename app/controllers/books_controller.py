@@ -26,9 +26,9 @@ def insert_new_book():
 
     id_book = book_repo.insert_book(data['name'], data['description'], data['url_img'], data['author'])
 
-    id_category = category_repo.get_category(data['category'])
-
-    book_repo.associate_book_by_category(id_book, id_category)
+    for category in data['categories']:
+        id_category = category_repo.get_category(category)
+        book_repo.associate_book_by_category(id_book, id_category)
 
     return jsonify({'salvo': 'ok'}), 201
 

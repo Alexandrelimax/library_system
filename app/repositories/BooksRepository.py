@@ -16,7 +16,7 @@ class BooksRepository:
     def associate_book_by_category(self, id_book, id_category):
         self.connection.commit()
         cursor = self.connection.cursor()
-        query = f'INSERT INTO books_categories(id_categories, id_books) VALUES ({id_category}, {id_book})'
+        query = f'INSERT INTO books_categories(id_category, id_book) VALUES ({id_category}, {id_book})'
         try:
             cursor.execute(query)
             self.connection.commit()

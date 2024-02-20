@@ -18,9 +18,9 @@ class BooksServices:
                 SELECT b.id, b.name, b.description, b.url_img, b.status, b.author, c.name as categoria
                 FROM books b
                 inner join books_categories 
-                on b.id = books_categories.id_books
+                on b.id = books_categories.id_book
                 inner join categories c
-                on c.id = books_categories.id_categories
+                on c.id = books_categories.id_category
                 where c.name = "{category}"
         """
         cursor.execute(query)
