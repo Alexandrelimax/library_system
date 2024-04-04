@@ -3,7 +3,7 @@ import os.path
 
 import jwt
 from app import app
-from flask import Blueprint, jsonify, request, Response
+from flask import Blueprint, jsonify, request, Response, render_template
 from app.repositories import BooksRepository
 from app.services import BooksServices
 from app.repositories import CategoryRepository
@@ -139,7 +139,7 @@ def upload_file_by_csv():
     with open(save_path, 'r') as new_file:
         data = new_file.read()
         lines = data.split('\n')
-        content_list = [row.split(',') for row in lines]
+        content_list = [row.split(';') for row in lines]
 
         for index, row in enumerate(content_list):
             if index != 0:

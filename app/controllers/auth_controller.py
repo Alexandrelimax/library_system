@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from app import bcrypt
 from database import Database
 from app.repositories import UserRepository
