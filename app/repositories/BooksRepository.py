@@ -4,7 +4,7 @@ class BooksRepository:
 
     def insert_book(self, name, description, url_image, author):
         cursor = self.connection.cursor()
-
+        
         query = 'INSERT INTO books (name, description, url_img, status, author) VALUES (%s, %s, %s,%s, %s)'
         values = (name, description, url_image, 'available', author)
         try:
